@@ -1,0 +1,1766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>The American Sides Quiz — Patriot/Loyalist & Federalist/Anti-Federalist</title>
+
+<style>
+    :root {
+        --navy: #17263c;
+        --navy-dark: #0d1727;
+        --red: #9d2b2b;
+        --cream: #f5f0e6;
+        --paper: #fffdf8;
+        --gold: #c9a44c;
+        --gray: #5e6570;
+        --light-gray: #e4e1d9;
+        --green: #315c48;
+        --shadow: 0 12px 35px rgba(0,0,0,.13);
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        margin: 0;
+        background:
+            radial-gradient(circle at 20% 10%, rgba(201,164,76,.10), transparent 25%),
+            linear-gradient(135deg, #eee9dd, #f8f5ee);
+        color: #20252c;
+        font-family: Georgia, "Times New Roman", serif;
+        line-height: 1.6;
+    }
+
+    /* ---------------- HEADER ---------------- */
+
+    header {
+        min-height: 430px;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 60px 20px;
+        background:
+            linear-gradient(rgba(13,23,39,.91), rgba(23,38,60,.94)),
+            repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 12px,
+                rgba(255,255,255,.025) 12px,
+                rgba(255,255,255,.025) 24px
+            );
+        border-bottom: 7px solid var(--gold);
+    }
+
+    .header-inner {
+        max-width: 1000px;
+    }
+
+    .eyebrow {
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        font-size: .85rem;
+        color: #e5cb7c;
+        margin-bottom: 15px;
+    }
+
+    h1 {
+        font-size: clamp(2.5rem, 7vw, 5.8rem);
+        line-height: .95;
+        margin: 0 0 25px;
+        font-weight: 700;
+    }
+
+    .subtitle {
+        max-width: 800px;
+        margin: auto;
+        font-size: clamp(1rem, 2vw, 1.25rem);
+        color: #e5e8ed;
+    }
+
+    .stars {
+        font-size: 1.5rem;
+        letter-spacing: 12px;
+        color: var(--gold);
+        margin: 25px 0;
+    }
+
+    /* ---------------- INTRO ---------------- */
+
+    main {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 50px 20px 100px;
+    }
+
+    .intro-card {
+        background: var(--paper);
+        border: 1px solid #ddd6c8;
+        box-shadow: var(--shadow);
+        padding: 40px;
+        margin-top: -90px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .intro-card h2 {
+        margin-top: 0;
+        font-size: 2rem;
+        color: var(--navy);
+    }
+
+    .notice {
+        border-left: 5px solid var(--gold);
+        padding: 18px 22px;
+        background: #f7f1df;
+        margin: 25px 0;
+    }
+
+    .notice strong {
+        color: var(--navy);
+    }
+
+    .start-button,
+    .next-button,
+    .restart-button {
+        border: none;
+        cursor: pointer;
+        font-family: Georgia, serif;
+        font-size: 1rem;
+        font-weight: bold;
+        letter-spacing: .5px;
+        padding: 15px 27px;
+        transition: .2s;
+    }
+
+    .start-button,
+    .next-button {
+        background: var(--navy);
+        color: white;
+    }
+
+    .start-button:hover,
+    .next-button:hover {
+        background: var(--red);
+        transform: translateY(-2px);
+    }
+
+    /* ---------------- PROGRESS ---------------- */
+
+    #quizArea {
+        display: none;
+    }
+
+    .section-banner {
+        background: var(--navy);
+        color: white;
+        padding: 30px;
+        margin-top: 50px;
+        box-shadow: var(--shadow);
+    }
+
+    .section-banner .number {
+        color: #dfc46f;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        font-size: .8rem;
+    }
+
+    .section-banner h2 {
+        font-size: 2.3rem;
+        margin: 5px 0;
+    }
+
+    .section-banner p {
+        color: #dce2ea;
+        margin-bottom: 0;
+    }
+
+    .progress-wrap {
+        background: #d8d4ca;
+        height: 9px;
+        margin: 25px 0 35px;
+    }
+
+    .progress-bar {
+        height: 100%;
+        width: 0%;
+        background: var(--red);
+        transition: width .3s;
+    }
+
+    .question-card {
+        background: var(--paper);
+        border: 1px solid #ddd6c8;
+        box-shadow: var(--shadow);
+        padding: 35px;
+    }
+
+    .question-number {
+        color: var(--red);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-size: .78rem;
+        font-weight: bold;
+    }
+
+    .question {
+        font-size: 1.65rem;
+        line-height: 1.3;
+        margin: 10px 0 30px;
+        color: var(--navy-dark);
+    }
+
+    .answers {
+        display: grid;
+        gap: 13px;
+    }
+
+    .answer {
+        position: relative;
+    }
+
+    .answer input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .answer label {
+        display: block;
+        padding: 18px 20px 18px 58px;
+        border: 2px solid #d8d4ca;
+        background: #fff;
+        cursor: pointer;
+        position: relative;
+        transition: .18s;
+    }
+
+    .answer label:hover {
+        border-color: var(--gold);
+        background: #fcf8ed;
+        transform: translateX(3px);
+    }
+
+    .answer label::before {
+        content: attr(data-letter);
+        position: absolute;
+        left: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 28px;
+        height: 28px;
+        border: 2px solid #aaa59a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: var(--gray);
+        background: white;
+    }
+
+    .answer input:checked + label {
+        border-color: var(--navy);
+        background: #eef2f7;
+        box-shadow: inset 5px 0 0 var(--navy);
+    }
+
+    .answer input:checked + label::before {
+        background: var(--navy);
+        color: white;
+        border-color: var(--navy);
+    }
+
+    .button-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 30px;
+        gap: 20px;
+    }
+
+    .question-status {
+        color: var(--gray);
+        font-size: .9rem;
+    }
+
+    /* ---------------- RESULTS ---------------- */
+
+    #results {
+        display: none;
+    }
+
+    .result-hero {
+        margin-top: 60px;
+        background: var(--navy);
+        color: white;
+        padding: 55px 35px;
+        text-align: center;
+        box-shadow: var(--shadow);
+    }
+
+    .result-hero .small {
+        text-transform: uppercase;
+        letter-spacing: 4px;
+        color: #dfc46f;
+        font-size: .8rem;
+    }
+
+    .result-hero h2 {
+        font-size: clamp(2.4rem, 6vw, 4.5rem);
+        margin: 10px 0;
+        line-height: 1;
+    }
+
+    .result-hero p {
+        max-width: 750px;
+        margin: 20px auto 0;
+        color: #e0e5ec;
+        font-size: 1.1rem;
+    }
+
+    .result-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+        margin-top: 25px;
+    }
+
+    .result-card {
+        background: var(--paper);
+        border: 1px solid #ddd6c8;
+        padding: 30px;
+        box-shadow: var(--shadow);
+    }
+
+    .result-card h3 {
+        margin-top: 0;
+        color: var(--navy);
+    }
+
+    .score-row {
+        margin: 20px 0;
+    }
+
+    .score-label {
+        display: flex;
+        justify-content: space-between;
+        font-size: .9rem;
+        margin-bottom: 6px;
+    }
+
+    .score-track {
+        height: 11px;
+        background: #ddd9cf;
+    }
+
+    .score-fill {
+        height: 100%;
+        transition: width 1s ease;
+    }
+
+    .federalist-fill {
+        background: var(--navy);
+    }
+
+    .antifederalist-fill {
+        background: #777;
+    }
+
+    .patriot-fill {
+        background: var(--red);
+    }
+
+    .loyalist-fill {
+        background: var(--green);
+    }
+
+    .interpretation {
+        background: #f5f1e8;
+        border-left: 5px solid var(--gold);
+        padding: 20px;
+        margin-top: 20px;
+    }
+
+    .sources {
+        margin-top: 50px;
+        background: #eae6dc;
+        padding: 30px;
+        font-size: .9rem;
+    }
+
+    .sources h3 {
+        margin-top: 0;
+    }
+
+    .sources a {
+        color: var(--navy);
+    }
+
+    .restart-button {
+        background: var(--red);
+        color: white;
+        margin-top: 25px;
+    }
+
+    .restart-button:hover {
+        background: var(--navy);
+    }
+
+    /* ---------------- RESPONSIVE ---------------- */
+
+    @media (max-width: 700px) {
+        .intro-card,
+        .question-card {
+            padding: 24px;
+        }
+
+        .result-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .button-row {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .next-button,
+        .restart-button,
+        .start-button {
+            width: 100%;
+        }
+
+        .question {
+            font-size: 1.35rem;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="header-inner">
+        <div class="eyebrow">A Historical Thought Experiment</div>
+
+        <h1>
+            The American Sides Quiz
+        </h1>
+
+        <div class="stars">★ ★ ★</div>
+
+        <div class="subtitle">
+            If you had lived in British North America during the Revolutionary
+            and Constitutional eras, where might your instincts have placed you?
+        </div>
+    </div>
+</header>
+
+<main>
+
+    <!-- INTRODUCTION -->
+
+    <section class="intro-card" id="intro">
+
+        <h2>Before You Begin</h2>
+
+        <p>
+            This is a long-form historical personality quiz. It is intended
+            for curious high-school students, college students, and adults.
+            It is written in a serious tone, but it is ultimately a game.
+        </p>
+
+        <p>
+            You will answer <strong>50 questions</strong> divided into two
+            sections:
+        </p>
+
+        <ul>
+            <li>
+                <strong>Section I — Patriot or Loyalist:</strong>
+                25 questions concerning the Revolution and the question of
+                continued allegiance to Britain.
+            </li>
+            <li>
+                <strong>Section II — Federalist or Anti-Federalist:</strong>
+                25 questions concerning the Constitution, federal power,
+                state authority, representation, and individual liberties.
+            </li>
+        </ul>
+
+        <div class="notice">
+            <strong>Important:</strong>
+            There are no correct answers. Do not try to “win” the quiz.
+            Do not try to guess what answer produces which result.
+            Simply choose the answer that most closely reflects your own
+            instinct in the situation described.
+        </div>
+
+        <p>
+            Some questions are deliberately subtle. Some may leave you
+            genuinely torn. Pick the answer that feels most natural to you.
+            Your final result is based on the pattern of your answers—not on
+            any individual question.
+        </p>
+
+        <p>
+            Historically, these labels were more complicated than a modern
+            four-letter quiz can capture. People could be Patriots on one
+            issue and cautious about independence on another; similarly,
+            people who opposed the Constitution could differ substantially
+            in their reasons for doing so.
+        </p>
+
+        <button class="start-button" onclick="startQuiz()">
+            Begin the Quiz →
+        </button>
+
+    </section>
+
+
+    <!-- QUIZ -->
+
+    <section id="quizArea">
+
+        <div class="section-banner" id="sectionBanner">
+            <div class="number" id="sectionNumber"></div>
+            <h2 id="sectionTitle"></h2>
+            <p id="sectionDescription"></p>
+        </div>
+
+        <div class="progress-wrap">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <div class="question-card">
+
+            <div class="question-number" id="questionNumber"></div>
+
+            <div class="question" id="questionText"></div>
+
+            <div class="answers" id="answers"></div>
+
+            <div class="button-row">
+
+                <div class="question-status" id="questionStatus"></div>
+
+                <button class="next-button" onclick="nextQuestion()">
+                    Next Question →
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- RESULTS -->
+
+    <section id="results">
+
+        <div class="result-hero">
+
+            <div class="small">
+                Your Historical Profile
+            </div>
+
+            <h2 id="ultimateResult"></h2>
+
+            <p id="ultimateDescription"></p>
+
+        </div>
+
+        <div class="result-grid">
+
+            <div class="result-card">
+
+                <h3>Section I — Revolution</h3>
+
+                <p>
+                    Your answers produced the following tendency:
+                </p>
+
+                <div class="score-row">
+                    <div class="score-label">
+                        <span>Patriot tendency</span>
+                        <strong id="patriotPercent"></strong>
+                    </div>
+
+                    <div class="score-track">
+                        <div
+                            class="score-fill patriot-fill"
+                            id="patriotBar">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="score-row">
+                    <div class="score-label">
+                        <span>Loyalist tendency</span>
+                        <strong id="loyalistPercent"></strong>
+                    </div>
+
+                    <div class="score-track">
+                        <div
+                            class="score-fill loyalist-fill"
+                            id="loyalistBar">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="interpretation" id="revolutionInterpretation"></div>
+
+            </div>
+
+
+            <div class="result-card">
+
+                <h3>Section II — Constitution</h3>
+
+                <p>
+                    Your answers produced the following tendency:
+                </p>
+
+                <div class="score-row">
+                    <div class="score-label">
+                        <span>Federalist tendency</span>
+                        <strong id="federalistPercent"></strong>
+                    </div>
+
+                    <div class="score-track">
+                        <div
+                            class="score-fill federalist-fill"
+                            id="federalistBar">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="score-row">
+                    <div class="score-label">
+                        <span>Anti-Federalist tendency</span>
+                        <strong id="antifederalistPercent"></strong>
+                    </div>
+
+                    <div class="score-track">
+                        <div
+                            class="score-fill antifederalist-fill"
+                            id="antifederalistBar">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="interpretation" id="constitutionInterpretation"></div>
+
+            </div>
+
+        </div>
+
+
+        <div class="result-card" style="margin-top:25px;">
+
+            <h3>Your Combined Historical Profile</h3>
+
+            <p id="combinedResult"></p>
+
+            <div class="interpretation">
+                <strong>Remember:</strong>
+                This result is not a prediction of what a real historical
+                person would have done. It is a simplified reconstruction
+                based entirely on the choices you made in this quiz.
+                Historical people had circumstances, loyalties, identities,
+                economic interests, communities, and experiences that cannot
+                be reduced to 50 multiple-choice questions.
+            </div>
+
+            <button class="restart-button" onclick="restartQuiz()">
+                Take the Quiz Again
+            </button>
+
+        </div>
+
+
+        <div class="sources">
+
+            <h3>Historical Notes & Sources</h3>
+
+            <p>
+                The broad distinctions used by this quiz are grounded in
+                primary-source collections and educational material from the
+                National Archives, Library of Congress, and National Park
+                Service.
+            </p>
+
+            <ul>
+                <li>
+                    National Archives —
+                    <a href="https://www.archives.gov/founding-docs/constitution/how-did-it-happen"
+                       target="_blank">
+                        The Constitution: How Did It Happen?
+                    </a>
+                </li>
+
+                <li>
+                    National Archives —
+                    <a href="https://www.archives.gov/founding-docs/more-perfect-union"
+                       target="_blank">
+                        Constitution of the United States: A History
+                    </a>
+                </li>
+
+                <li>
+                    Library of Congress —
+                    <a href="https://www.loc.gov/exhibits/creating-the-united-states/formation-of-political-parties.html"
+                       target="_blank">
+                        Formation of Political Parties
+                    </a>
+                </li>
+
+                <li>
+                    Library of Congress —
+                    <a href="https://www.loc.gov/exhibits/creating-the-united-states/creating-the-bill-of-rights.html"
+                       target="_blank">
+                        Creating the Bill of Rights
+                    </a>
+                </li>
+
+                <li>
+                    National Park Service —
+                    <a href="https://www.nps.gov/articles/warpoli.htm"
+                       target="_blank">
+                        War & Politics, 1675–1781
+                    </a>
+                </li>
+
+                <li>
+                    National Park Service —
+                    <a href="https://www.nps.gov/teachers/classrooms/loyalists-in-american-revolution.htm"
+                       target="_blank">
+                        Loyalists in the American Revolution
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script>
+
+/* ============================================================
+   THE QUIZ DATA
+   ============================================================
+
+   Each answer is represented by a letter.
+
+   Section I:
+       A / B generally contribute toward Patriot
+       C / D generally contribute toward Loyalist
+
+   Section II:
+       A / B generally contribute toward Federalist
+       C / D generally contribute toward Anti-Federalist
+
+   IMPORTANT:
+   The user never sees these classifications.
+   The quiz is intentionally framed as a personal-opinion exercise.
+   ============================================================ */
+
+
+const sections = [
+
+{
+    id: "revolution",
+    title: "Section I — Patriot or Loyalist?",
+    description:
+        "Imagine yourself living in the American colonies during the years of mounting conflict with Britain. What would your instincts tell you to do?",
+    questions: [
+
+        {
+            q: "Parliament imposes a new tax on the colonies. What is your first reaction?",
+            answers: [
+                "A. If we have no elected representatives there, Parliament should not be taxing us directly.",
+                "B. I would resist the tax unless the colonies receive a meaningful political voice.",
+                "C. Britain won a costly war defending the colonies; contributing to its expenses seems reasonable.",
+                "D. Whatever my personal opinion of the tax, Parliament is the lawful authority and its laws should be obeyed."
+            ]
+        },
+
+        {
+            q: "A group of neighbors proposes boycotting British goods. You think:",
+            answers: [
+                "A. Economic pressure is a legitimate peaceful form of resistance.",
+                "B. I would participate if the purpose were to defend colonial rights.",
+                "C. Boycotts unfairly punish merchants and consumers who have done nothing wrong.",
+                "D. Deliberately refusing British goods could be interpreted as disloyalty."
+            ]
+        },
+
+        {
+            q: "British troops are stationed in your town. How do you feel?",
+            answers: [
+                "A. Their presence is a warning that local self-government is being undermined.",
+                "B. I would tolerate them only if their presence were genuinely necessary and locally accepted.",
+                "C. Their presence may be inconvenient, but maintaining order is an important government function.",
+                "D. British troops are there under lawful authority and should be respected."
+            ]
+        },
+
+        {
+            q: "A friend says, 'We are British subjects, and our rights come from being British subjects.' You reply:",
+            answers: [
+                "A. Being British subjects should not mean surrendering rights to distant authorities.",
+                "B. Our rights as colonists must be protected even against the Crown.",
+                "C. Our British identity is an important reason to preserve the connection.",
+                "D. Separation from Britain would abandon a political and cultural system that has protected us."
+            ]
+        },
+
+        {
+            q: "The colonial assembly passes a law that conflicts with an act of Parliament. Which principle seems more convincing?",
+            answers: [
+                "A. Local laws should prevail on matters concerning the internal affairs of the colonies.",
+                "B. Colonial institutions should have substantial authority over their own communities.",
+                "C. Parliament is the supreme legislature of the British Empire.",
+                "D. Conflicting colonial legislation should yield to lawful imperial authority."
+            ]
+        },
+
+        {
+            q: "A prominent Patriot asks you to sign a public declaration condemning British policy. You:",
+            answers: [
+                "A. Sign it if it defends what I believe are fundamental colonial rights.",
+                "B. Sign it, although I would prefer peaceful protest to violence.",
+                "C. Refuse unless the language explicitly avoids rebellion.",
+                "D. Refuse because public opposition to the Crown has gone too far."
+            ]
+        },
+
+        {
+            q: "News arrives that fighting has broken out between colonial militia and British troops. Your immediate instinct is:",
+            answers: [
+                "A. The conflict proves that the dispute has become a defense of liberty.",
+                "B. I would support the colonies, while hoping the conflict can still be resolved.",
+                "C. I would worry that the resistance has transformed a political dispute into a disastrous war.",
+                "D. I would hope the Crown restores order quickly."
+            ]
+        },
+
+        {
+            q: "Someone argues that independence is too dangerous because Britain has the world's strongest empire. You think:",
+            answers: [
+                "A. Danger does not erase the principle of self-government.",
+                "B. Independence is risky, but continued submission may be worse.",
+                "C. Practical security matters more than political idealism.",
+                "D. The safest course is remaining within the British Empire."
+            ]
+        },
+
+        {
+            q: "What do you think about colonial resistance turning violent?",
+            answers: [
+                "A. Violence is regrettable, but resistance may become necessary when peaceful appeals fail.",
+                "B. I would oppose unnecessary violence but defend the community if attacked.",
+                "C. Once resistance becomes violent, it threatens the very order people claim to be defending.",
+                "D. Armed rebellion against one's lawful government is fundamentally wrong."
+            ]
+        },
+
+        {
+            q: "A merchant tells you that his business depends heavily on trade with Britain. Your response:",
+            answers: [
+                "A. Economic dependence should not determine whether political rights are defended.",
+                "B. I sympathize with him, but political liberty may require economic sacrifice.",
+                "C. Economic stability should be a major reason to avoid breaking with Britain.",
+                "D. Preserving imperial trade is essential to the colony's prosperity."
+            ]
+        },
+
+        {
+            q: "You are asked whether the colonies could survive independently. You answer:",
+            answers: [
+                "A. We have the resources and people to build our own political future.",
+                "B. Independence would be difficult, but possible with cooperation among the colonies.",
+                "C. Independence would create enormous economic and military risks.",
+                "D. The colonies are safer and stronger as part of the British Empire."
+            ]
+        },
+
+        {
+            q: "A royal governor dissolves a colonial legislature after it becomes openly hostile to British policy. You think:",
+            answers: [
+                "A. Dissolving elected institutions confirms why resistance is necessary.",
+                "B. Local representative government should not be suspended simply because it disagrees with the governor.",
+                "C. A governor must sometimes intervene when an assembly becomes obstructive.",
+                "D. The Crown has legitimate authority to restrain colonial institutions when necessary."
+            ]
+        },
+
+        {
+            q: "A peaceful petition to the King receives no meaningful response. What should happen next?",
+            answers: [
+                "A. Escalate resistance through boycotts, conventions, and organized political action.",
+                "B. Continue coordinated pressure while preparing for the possibility of armed conflict.",
+                "C. Give the government more time rather than immediately moving toward rebellion.",
+                "D. Continue petitioning through lawful imperial channels."
+            ]
+        },
+
+        {
+            q: "How important is loyalty to the King?",
+            answers: [
+                "A. Loyalty is conditional upon government respecting the rights of its subjects.",
+                "B. Loyalty to one's community can sometimes take precedence over loyalty to a monarch.",
+                "C. Loyalty to the King is an important obligation even when his policies are unpopular.",
+                "D. Loyalty to the Crown is a central part of being a British subject."
+            ]
+        },
+
+        {
+            q: "A neighbor says, 'The colonies have already benefited enormously from British protection.' You respond:",
+            answers: [
+                "A. Protection does not give a government unlimited authority over the people it protects.",
+                "B. We can recognize Britain's contributions while still demanding political rights.",
+                "C. Britain's protection is one reason the colonies should remain within the empire.",
+                "D. The benefits of imperial protection outweigh the arguments for independence."
+            ]
+        },
+
+        {
+            q: "You hear that local Patriots have begun pressuring suspected Loyalists. You think:",
+            answers: [
+                "A. Political resistance should not become an excuse for arbitrary abuse.",
+                "B. The cause of liberty is weakened when people are coerced into supporting it.",
+                "C. Such intimidation proves the revolutionary movement is becoming dangerous.",
+                "D. People should be allowed to remain loyal to Britain without being threatened."
+            ]
+        },
+
+        {
+            q: "A friend asks whether you would take up arms if Britain sent soldiers to suppress the colonial resistance.",
+            answers: [
+                "A. Yes, if my community were threatened and peaceful resistance had failed.",
+                "B. Probably, although only as a last resort.",
+                "C. I would avoid fighting unless there were absolutely no alternative.",
+                "D. I would not fight against the Crown."
+            ]
+        },
+
+        {
+            q: "What should happen to colonial taxes collected for the British government?",
+            answers: [
+                "A. Colonial representatives should control taxation imposed within the colonies.",
+                "B. Taxes should be approved by institutions accountable to colonial voters.",
+                "C. Colonists should contribute to imperial expenses because Britain provides defense and administration.",
+                "D. Parliament has the legitimate authority to determine imperial taxation."
+            ]
+        },
+
+        {
+            q: "Suppose Britain offers the colonies greater self-government but refuses independence. Your reaction:",
+            answers: [
+                "A. It may be a useful step, but I would want meaningful guarantees of political liberty.",
+                "B. I could accept it temporarily if it genuinely protected colonial rights.",
+                "C. That sounds like a reasonable compromise.",
+                "D. If the colonies can retain substantial local autonomy within the empire, independence is unnecessary."
+            ]
+        },
+
+        {
+            q: "A revolutionary pamphlet declares that governments derive their legitimacy from the consent of the governed. Your response:",
+            answers: [
+                "A. That principle should apply to the colonies.",
+                "B. It captures the central reason I object to distant rule.",
+                "C. It is appealing, but government also requires established authority and law.",
+                "D. A monarch and Parliament possess legitimate authority even without every subject directly consenting."
+            ]
+        },
+
+        {
+            q: "You must choose between economic security under Britain and political independence with considerable uncertainty.",
+            answers: [
+                "A. I would choose independence.",
+                "B. I would accept considerable risk for self-government.",
+                "C. I would hesitate strongly before giving up economic security.",
+                "D. I would choose continued connection with Britain."
+            ]
+        },
+
+        {
+            q: "A colonial militia asks for volunteers. You:",
+            answers: [
+                "A. Volunteer.",
+                "B. Probably volunteer if my local community supports resistance.",
+                "C. Decline unless Britain has clearly attacked my community.",
+                "D. Decline because I would not join an armed rebellion."
+            ]
+        },
+
+        {
+            q: "Which statement comes closest to your instinct?",
+            answers: [
+                "A. A distant government cannot legitimately rule people who have no meaningful representation.",
+                "B. The colonies should govern themselves as much as possible.",
+                "C. Political grievances should be addressed without destroying a functioning imperial system.",
+                "D. The British constitutional system is worth preserving even through serious disagreement."
+            ]
+        },
+
+        {
+            q: "If independence succeeds, what would concern you most?",
+            answers: [
+                "A. That the new nation might fail to protect the liberty for which people fought.",
+                "B. That revolutionary ideals might not be carried into the new government.",
+                "C. That independence might produce instability, debt, and disorder.",
+                "D. That separation from Britain might weaken security and prosperity."
+            ]
+        },
+
+        {
+            q: "Finally, imagine you are asked in 1776: 'Are you prepared to break permanently with Britain?'",
+            answers: [
+                "A. Yes. The time has come.",
+                "B. Reluctantly, but yes, if reconciliation is no longer possible.",
+                "C. I would still prefer reconciliation.",
+                "D. No. I would remain loyal to the Crown."
+            ]
+        }
+
+    ]
+},
+
+{
+    id: "constitution",
+    title: "Section II — Federalist or Anti-Federalist?",
+    description:
+        "It is now 1787–1788. The Revolution has ended, the Articles of Confederation have governed the new United States, and a proposed Constitution is before the states for ratification.",
+    questions: [
+
+        {
+            q: "The proposed Constitution creates a considerably stronger national government. Your first reaction?",
+            answers: [
+                "A. Necessary. The country needs a government capable of acting effectively.",
+                "B. Generally favorable, provided the Constitution contains adequate restraints.",
+                "C. Dangerous. Concentrated national power could threaten liberty.",
+                "D. I would prefer most political authority to remain with the states."
+            ]
+        },
+
+        {
+            q: "The Articles of Confederation have made national action difficult. What should be done?",
+            answers: [
+                "A. Replace them with a stronger constitutional system.",
+                "B. Significantly revise them so the national government can function.",
+                "C. Amend the Articles without creating such a powerful central government.",
+                "D. Preserve the basic confederation and address individual weaknesses."
+            ]
+        },
+
+        {
+            q: "The Constitution does not originally contain a separate Bill of Rights. Your reaction?",
+            answers: [
+                "A. It may be unnecessary because the federal government's powers are enumerated.",
+                "B. I could accept the Constitution if amendments protecting rights are promised.",
+                "C. A Bill of Rights is essential before ratification.",
+                "D. I would be deeply uncomfortable giving the national government new powers without explicit protections."
+            ]
+        },
+
+        {
+            q: "Which governmental structure seems safer?",
+            answers: [
+                "A. A national government divided among branches with checks and balances.",
+                "B. A strong federal government whose branches restrain one another.",
+                "C. A system in which states retain extensive independent authority.",
+                "D. A decentralized union where distant officials have limited power."
+            ]
+        },
+
+        {
+            q: "The proposed president would possess significant executive authority. You think:",
+            answers: [
+                "A. A strong executive is necessary for energetic government.",
+                "B. Executive power is acceptable if checked by Congress and the courts.",
+                "C. A powerful executive could eventually resemble the kind of authority Americans had just rejected.",
+                "D. The presidency should be kept relatively weak."
+            ]
+        },
+
+        {
+            q: "What do you think of a national court system?",
+            answers: [
+                "A. Essential for uniform interpretation of federal law.",
+                "B. Useful, especially for disputes crossing state boundaries.",
+                "C. Potentially dangerous if federal judges override state institutions too freely.",
+                "D. Federal courts should have a very limited jurisdiction."
+            ]
+        },
+
+        {
+            q: "The Constitution gives Congress power to tax. You think:",
+            answers: [
+                "A. The federal government must have reliable revenue to function.",
+                "B. Federal taxation is legitimate if controlled by elected representatives.",
+                "C. Direct federal taxation creates too much potential for centralized power.",
+                "D. Most taxation should remain under state control."
+            ]
+        },
+
+        {
+            q: "Imagine Congress passes a law that you strongly dislike. Which principle matters most?",
+            answers: [
+                "A. If Congress acted within its constitutional authority, the law should stand.",
+                "B. The constitutional system should determine whether federal action is legitimate.",
+                "C. State governments should have substantial ability to resist federal overreach.",
+                "D. A distant national majority should not easily override local communities."
+            ]
+        },
+
+        {
+            q: "How large should a republic be?",
+            answers: [
+                "A. Large republics can help prevent any single faction from dominating.",
+                "B. A broad union allows different interests to balance one another.",
+                "C. A republic works best when representatives remain close to the people.",
+                "D. Very large republics risk becoming impersonal and unrepresentative."
+            ]
+        },
+
+        {
+            q: "What is the greatest danger facing the new United States?",
+            answers: [
+                "A. Disunion, weak government, and inability to respond to national crises.",
+                "B. Political fragmentation among the states.",
+                "C. Concentrated government power.",
+                "D. A distant ruling class becoming detached from ordinary citizens."
+            ]
+        },
+
+        {
+            q: "You are told that wealthy and educated people would probably occupy many federal offices. Your reaction?",
+            answers: [
+                "A. Competence matters; capable people should be allowed to govern.",
+                "B. Education and experience can be valuable if elections remain meaningful.",
+                "C. Concentrating political power among elites is dangerous.",
+                "D. Representatives should remain closely connected to ordinary citizens."
+            ]
+        },
+
+        {
+            q: "The Constitution creates a national legislature with two chambers. You think:",
+            answers: [
+                "A. Bicameralism provides useful internal checks.",
+                "B. Different chambers can balance different interests.",
+                "C. Additional layers of government could distance representatives from the people.",
+                "D. The structure risks producing an elite political class."
+            ]
+        },
+
+        {
+            q: "Would you trust constitutional checks and balances to restrain government power?",
+            answers: [
+                "A. Yes. Dividing power makes tyranny much harder.",
+                "B. Generally yes, assuming the institutions remain accountable.",
+                "C. Only partially; written structures cannot guarantee political liberty.",
+                "D. No. The safest protection is keeping government power close to the states and people."
+            ]
+        },
+
+        {
+            q: "Suppose ratification occurs but several states demand amendments afterward.",
+            answers: [
+                "A. That is a reasonable compromise if it preserves the new government.",
+                "B. I would support ratification with a clear commitment to amendments.",
+                "C. I would prefer amendments before ratification.",
+                "D. I would hesitate to ratify until major protections were secured."
+            ]
+        },
+
+        {
+            q: "A friend says, 'The Constitution will only be as good as the people who operate it.' You reply:",
+            answers: [
+                "A. Institutions can reduce the danger of bad political actors.",
+                "B. A carefully designed government can channel competing interests.",
+                "C. Institutions matter, but people should not be trusted with excessive power.",
+                "D. Political power should therefore be kept as close to the people as possible."
+            ]
+        },
+
+        {
+            q: "Which seems more dangerous?",
+            answers: [
+                "A. A national government too weak to protect the union.",
+                "B. States pursuing conflicting policies without effective national coordination.",
+                "C. A national government gradually absorbing state authority.",
+                "D. A powerful federal government becoming difficult for ordinary citizens to control."
+            ]
+        },
+
+        {
+            q: "The proposed Constitution contains the Supremacy Clause. Your reaction?",
+            answers: [
+                "A. Necessary so valid federal law can actually function.",
+                "B. Reasonable, provided federal power remains constitutionally limited.",
+                "C. Concerning because it could weaken state authority.",
+                "D. Very concerning because national law could overwhelm local government."
+            ]
+        },
+
+        {
+            q: "How should disagreements between states be handled?",
+            answers: [
+                "A. Through national institutions capable of making binding decisions.",
+                "B. Through federal courts and Congress where appropriate.",
+                "C. Primarily through negotiation among the states.",
+                "D. States should retain considerable freedom to settle their own affairs."
+            ]
+        },
+
+        {
+            q: "Imagine a serious rebellion or domestic crisis occurs. What government would you want?",
+            answers: [
+                "A. A national government capable of responding quickly.",
+                "B. A federal government with enough authority to restore order.",
+                "C. A government restrained enough that emergency powers cannot become permanent.",
+                "D. A system where local governments retain substantial control over their own security."
+            ]
+        },
+
+        {
+            q: "Which description sounds more attractive?",
+            answers: [
+                "A. 'An energetic national government.'",
+                "B. 'A durable union with carefully divided powers.'",
+                "C. 'A government of limited and enumerated authority.'",
+                "D. 'A union that leaves most governing power with the states.'"
+            ]
+        },
+
+        {
+            q: "What should representatives primarily consider?",
+            answers: [
+                "A. The long-term interests of the entire union.",
+                "B. Both national interests and the concerns of their constituents.",
+                "C. The immediate interests and wishes of their local communities.",
+                "D. The specific interests of the states that elected them."
+            ]
+        },
+
+        {
+            q: "Would you rather risk an ineffective government or an overly powerful government?",
+            answers: [
+                "A. An ineffective government is the greater danger.",
+                "B. Some additional national power is worth the risk.",
+                "C. Excessive government power is the greater danger.",
+                "D. I would rather tolerate governmental weakness than risk concentrated authority."
+            ]
+        },
+
+        {
+            q: "A newspaper argues that the Constitution will prevent factions from permanently controlling the government. Your reaction:",
+            answers: [
+                "A. That is one of the strongest arguments for a large republic.",
+                "B. Competition among interests can protect liberty.",
+                "C. Large republics may actually make representatives less accountable.",
+                "D. Local representation is more important than attempting to balance factions through size."
+            ]
+        },
+
+        {
+            q: "A political leader says, 'We need national unity more than anything else.' You think:",
+            answers: [
+                "A. Unity is essential to the survival of the republic.",
+                "B. A stronger union can protect both national interests and liberty.",
+                "C. Unity should never require surrendering constitutional limits.",
+                "D. State independence and local self-government are themselves essential parts of liberty."
+            ]
+        },
+
+        {
+            q: "Finally, you stand at a state ratifying convention in 1788. How do you vote?",
+            answers: [
+                "A. Ratify the Constitution.",
+                "B. Ratify it, preferably with amendments protecting individual liberties.",
+                "C. Reject it unless substantial safeguards are secured.",
+                "D. Reject it and seek a much more limited federal system."
+            ]
+        }
+
+    ]
+}
+
+];
+
+
+/* ============================================================
+   STATE
+   ============================================================ */
+
+let currentSection = 0;
+let currentQuestion = 0;
+
+const answersChosen = {
+    revolution: [],
+    constitution: []
+};
+
+
+/* ============================================================
+   START
+   ============================================================ */
+
+function startQuiz() {
+
+    document.getElementById("intro").style.display = "none";
+    document.getElementById("quizArea").style.display = "block";
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+    renderQuestion();
+}
+
+
+/* ============================================================
+   RENDER QUESTION
+   ============================================================ */
+
+function renderQuestion() {
+
+    const section = sections[currentSection];
+    const question = section.questions[currentQuestion];
+
+    document.getElementById("sectionNumber").textContent =
+        currentSection === 0
+            ? "Section I of II"
+            : "Section II of II";
+
+    document.getElementById("sectionTitle").textContent =
+        section.title;
+
+    document.getElementById("sectionDescription").textContent =
+        section.description;
+
+    document.getElementById("questionNumber").textContent =
+        "Question " + (currentQuestion + 1) + " of 25";
+
+    document.getElementById("questionText").textContent =
+        question.q;
+
+    document.getElementById("questionStatus").textContent =
+        "Choose one answer.";
+
+    const answersContainer =
+        document.getElementById("answers");
+
+    answersContainer.innerHTML = "";
+
+    const letters = ["A", "B", "C", "D"];
+
+    question.answers.forEach((answer, index) => {
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "answer";
+
+        const input = document.createElement("input");
+
+        input.type = "radio";
+        input.name = "currentAnswer";
+        input.id = "answer" + index;
+        input.value = letters[index];
+
+        const previouslyChosen =
+            answersChosen[section.id][currentQuestion];
+
+        if (previouslyChosen === letters[index]) {
+            input.checked = true;
+        }
+
+        const label = document.createElement("label");
+
+        label.htmlFor = input.id;
+        label.setAttribute("data-letter", letters[index]);
+
+        label.textContent = answer.substring(3);
+
+        wrapper.appendChild(input);
+        wrapper.appendChild(label);
+
+        answersContainer.appendChild(wrapper);
+    });
+
+    const totalQuestions = 50;
+    const questionIndex =
+        currentSection * 25 + currentQuestion;
+
+    const progress =
+        (questionIndex / totalQuestions) * 100;
+
+    document.getElementById("progressBar").style.width =
+        progress + "%";
+
+    const button =
+        document.querySelector(".next-button");
+
+    if (
+        currentSection === 1 &&
+        currentQuestion === 24
+    ) {
+        button.textContent = "Reveal My Result →";
+    } else {
+        button.textContent = "Next Question →";
+    }
+}
+
+
+/* ============================================================
+   NEXT QUESTION
+   ============================================================ */
+
+function nextQuestion() {
+
+    const selected =
+        document.querySelector(
+            'input[name="currentAnswer"]:checked'
+        );
+
+    if (!selected) {
+
+        document.getElementById("questionStatus").textContent =
+            "Please choose an answer before continuing.";
+
+        document.getElementById("questionStatus").style.color =
+            "#9d2b2b";
+
+        return;
+    }
+
+    const section = sections[currentSection];
+
+    answersChosen[section.id][currentQuestion] =
+        selected.value;
+
+    document.getElementById("questionStatus").style.color =
+        "";
+
+    if (currentQuestion < 24) {
+
+        currentQuestion++;
+
+        renderQuestion();
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+        return;
+    }
+
+    if (currentSection === 0) {
+
+        currentSection = 1;
+        currentQuestion = 0;
+
+        renderQuestion();
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+        return;
+    }
+
+    showResults();
+}
+
+
+/* ============================================================
+   CALCULATE RESULTS
+   ============================================================ */
+
+function calculateSection(sectionId) {
+
+    const selected =
+        answersChosen[sectionId];
+
+    let firstHalf = 0;
+    let secondHalf = 0;
+
+    selected.forEach(letter => {
+
+        if (letter === "A" || letter === "B") {
+            firstHalf++;
+        }
+
+        if (letter === "C" || letter === "D") {
+            secondHalf++;
+        }
+    });
+
+    const firstPercent =
+        Math.round((firstHalf / 25) * 100);
+
+    const secondPercent =
+        100 - firstPercent;
+
+    return {
+        first: firstHalf,
+        second: secondHalf,
+        firstPercent,
+        secondPercent
+    };
+}
+
+
+/* ============================================================
+   SHOW RESULTS
+   ============================================================ */
+
+function showResults() {
+
+    document.getElementById("quizArea").style.display = "none";
+    document.getElementById("results").style.display = "block";
+
+    const revolution =
+        calculateSection("revolution");
+
+    const constitution =
+        calculateSection("constitution");
+
+
+    /* -------- REVOLUTION -------- */
+
+    const patriot =
+        revolution.firstPercent;
+
+    const loyalist =
+        revolution.secondPercent;
+
+    document.getElementById("patriotPercent").textContent =
+        patriot + "%";
+
+    document.getElementById("loyalistPercent").textContent =
+        loyalist + "%";
+
+    document.getElementById("patriotBar").style.width =
+        patriot + "%";
+
+    document.getElementById("loyalistBar").style.width =
+        loyalist + "%";
+
+
+    /* -------- CONSTITUTION -------- */
+
+    const federalist =
+        constitution.firstPercent;
+
+    const antifederalist =
+        constitution.secondPercent;
+
+    document.getElementById("federalistPercent").textContent =
+        federalist + "%";
+
+    document.getElementById("antifederalistPercent").textContent =
+        antifederalist + "%";
+
+    document.getElementById("federalistBar").style.width =
+        federalist + "%";
+
+    document.getElementById("antifederalistBar").style.width =
+        antifederalist + "%";
+
+
+    /* -------- INTERPRETATIONS -------- */
+
+    let revolutionText = "";
+
+    if (patriot > loyalist) {
+
+        revolutionText =
+            "<strong>Patriot tendency:</strong> " +
+            "Your answers leaned toward resistance to British authority " +
+            "and toward colonial self-government or independence.";
+
+    } else if (loyalist > patriot) {
+
+        revolutionText =
+            "<strong>Loyalist tendency:</strong> " +
+            "Your answers leaned toward preserving the imperial connection, " +
+            "lawful authority, stability, and continued allegiance to Britain.";
+
+    } else {
+
+        revolutionText =
+            "<strong>Evenly divided:</strong> " +
+            "Your answers produced an exact balance between the two broad " +
+            "tendencies. You repeatedly occupied the middle ground.";
+    }
+
+
+    let constitutionText = "";
+
+    if (federalist > antifederalist) {
+
+        constitutionText =
+            "<strong>Federalist tendency:</strong> " +
+            "Your answers leaned toward a stronger national government, " +
+            "effective national institutions, and confidence in constitutional " +
+            "checks and balances.";
+
+    } else if (antifederalist > federalist) {
+
+        constitutionText =
+            "<strong>Anti-Federalist tendency:</strong> " +
+            "Your answers leaned toward limited national authority, strong " +
+            "state governments, local representation, and explicit protections " +
+            "against centralized power.";
+
+    } else {
+
+        constitutionText =
+            "<strong>Evenly divided:</strong> " +
+            "Your answers produced an exact balance between the Federalist " +
+            "and Anti-Federalist tendencies.";
+    }
+
+
+    document.getElementById("revolutionInterpretation").innerHTML =
+        revolutionText;
+
+    document.getElementById("constitutionInterpretation").innerHTML =
+        constitutionText;
+
+
+    /* -------- ULTIMATE RESULT -------- */
+
+    let revolutionLabel;
+    let constitutionLabel;
+
+    if (patriot > loyalist) {
+        revolutionLabel = "Patriot";
+    } else if (loyalist > patriot) {
+        revolutionLabel = "Loyalist";
+    } else {
+        revolutionLabel = "Patriot / Loyalist — Evenly Divided";
+    }
+
+
+    if (federalist > antifederalist) {
+        constitutionLabel = "Federalist";
+    } else if (antifederalist > federalist) {
+        constitutionLabel = "Anti-Federalist";
+    } else {
+        constitutionLabel =
+            "Federalist / Anti-Federalist — Evenly Divided";
+    }
+
+
+    document.getElementById("ultimateResult").textContent =
+        revolutionLabel + " · " + constitutionLabel;
+
+
+    document.getElementById("ultimateDescription").textContent =
+        "Based on your 50 choices, your historical profile combines " +
+        revolutionLabel.toLowerCase() +
+        " instincts during the Revolution with " +
+        constitutionLabel.toLowerCase() +
+        " instincts during the Constitutional debate.";
+
+
+    /* -------- COMBINED PROFILE -------- */
+
+    let combined = "";
+
+    if (patriot > loyalist && federalist > antifederalist) {
+
+        combined =
+            "<strong>Patriot + Federalist:</strong> " +
+            "You tended to favor resistance to British authority while also " +
+            "favoring a stronger national framework once independence had been " +
+            "achieved.";
+
+    } else if (patriot > loyalist && antifederalist > federalist) {
+
+        combined =
+            "<strong>Patriot + Anti-Federalist:</strong> " +
+            "You tended to favor independence from Britain while remaining " +
+            "cautious about replacing imperial authority with a powerful " +
+            "central government.";
+
+    } else if (loyalist > patriot && federalist > antifederalist) {
+
+        combined =
+            "<strong>Loyalist + Federalist:</strong> " +
+            "You tended to value established authority and imperial order " +
+            "during the Revolution while later favoring a stronger national " +
+            "government for the United States.";
+
+    } else if (loyalist > patriot && antifederalist > federalist) {
+
+        combined =
+            "<strong>Loyalist + Anti-Federalist:</strong> " +
+            "You tended to favor continued British allegiance during the " +
+            "Revolution while also being cautious about centralized authority " +
+            "under the proposed American Constitution.";
+
+    } else {
+
+        combined =
+            "<strong>A Mixed Historical Profile:</strong> " +
+            "Your answers did not produce a clean ideological combination. " +
+            "You repeatedly gave answers that crossed the broad categories " +
+            "used by this quiz.";
+    }
+
+
+    document.getElementById("combinedResult").innerHTML =
+        combined;
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
+
+
+/* ============================================================
+   RESTART
+   ============================================================ */
+
+function restartQuiz() {
+
+    currentSection = 0;
+    currentQuestion = 0;
+
+    answersChosen.revolution = [];
+    answersChosen.constitution = [];
+
+    document.getElementById("results").style.display = "none";
+    document.getElementById("intro").style.display = "block";
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
+
+</script>
+
+</body>
+</html>
